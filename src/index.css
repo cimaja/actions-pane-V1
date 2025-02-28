@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.react-flow__node {
+  @apply select-none;
+}
+
+.react-flow__handle {
+  @apply w-3 h-3;
+}
+
+.react-flow__edge-path {
+  @apply stroke-2;
+}
+
+.react-flow__minimap {
+  @apply bg-white rounded-lg shadow-lg;
+}
+
+.react-flow__controls {
+  @apply bg-white rounded-lg shadow-lg;
+}
+
+.react-flow__controls-button {
+  @apply border-gray-200 hover:bg-gray-50;
+}
+
+/* Prevent text selection while resizing */
+.user-select-none {
+  user-select: none;
+}
+
+/* Add a subtle transition for smooth resizing */
+.resize-transition {
+  transition: width 0.1s ease;
+}
+
+/* Modern subtle gradient background */
+.modern-gradient {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+/* Action items styling */
+.action-item {
+  @apply mx-3;
+}
