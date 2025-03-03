@@ -585,11 +585,25 @@ const Sidebar = () => {
     return false;
   };
 
-  // This function was previously used to count premium actions
-  // We're keeping a simplified version in case we need it in the future
+  // Count premium actions that would be filtered out by the premium filter
   const getFilteredPremiumCount = useCallback(() => {
-    return 0;
-  }, []);
+    if (!searchQuery) return 0;
+    
+    // Count premium actions that match the search query
+    let count = 0;
+    
+    // Check all sections for premium actions that match the search
+    getActionItems().forEach(section => {
+      section.items.forEach(action => {
+        if (isPremiumConnectorAction(action.name) && 
+            action.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+          count++;
+        }
+      });
+    });
+    
+    return count;
+  }, [searchQuery, getActionItems, isPremiumConnectorAction]);
 
   // Determine if an action should be visually disabled
   const isActionDisabled = (actionName: string): boolean => {
@@ -1050,7 +1064,7 @@ const Sidebar = () => {
           ) : (
             <>
               {/* Show message when premium results are filtered out */}
-              {searchQuery && selectedFilters.includes('premium') ? (
+              {searchQuery && selectedFilters.includes('premium') && getFilteredPremiumCount() > 0 ? (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                   <div className="flex items-start gap-2">
                     <div className="text-blue-500 mt-0.5">
