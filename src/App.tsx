@@ -65,6 +65,9 @@ function App() {
         <Sidebar />
       </div>
       <div className="flex-1 flex">
+        <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 text-xs rounded-md z-50">
+          Updated: March 3, 13:15
+        </div>
         <div className="flex-1" style={{ height: '100vh' }}>
           <ReactFlow
             nodes={nodes}
