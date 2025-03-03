@@ -70,7 +70,7 @@ const EmptyState = ({
     <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
       <Icon className="w-6 h-6 text-gray-400" />
     </div>
-    <h3 className="text-sm font-medium text-gray-900 mb-1">{title}</h3>
+    <h3 className="text-sm font-semibold text-gray-900 mb-1">{title}</h3>
     <p className="text-sm text-gray-500">{description}</p>
   </div>
 );
@@ -406,7 +406,8 @@ const Sidebar = () => {
               description: 'Actions you use will appear here'
             }
           },
-          ...(favorites.length > 0 ? getFavoritesByCategory() : [{
+          // Always include the favorites section, but with empty items if there are no favorites
+          ...(!searchQuery ? (favorites.length > 0 ? getFavoritesByCategory() : [{
             category: 'Favorite Actions',
             icon: Star,
             color: 'bg-amber-100 text-amber-600',
@@ -417,7 +418,7 @@ const Sidebar = () => {
               title: 'No favorite actions yet',
               description: 'Click the star icon to add actions to your favorites'
             }
-          }])
+          }]) : [])
         ];
       case 'logic':
         // Don't sort logic items to keep Variables at the top
@@ -1044,6 +1045,10 @@ const Sidebar = () => {
             <>
               {getActionItems()
                 .filter(section => {
+                  // Always show sections with empty states
+                  if (section.emptyState) {
+                    return true;
+                  }
                   // Hide sections where all items are filtered out and all subgroups are filtered out
                   const hasVisibleItems = section.items.some(item => !shouldHideAction(item));
                   const hasVisibleSubgroupItems = section.subgroups?.some(sg => 
