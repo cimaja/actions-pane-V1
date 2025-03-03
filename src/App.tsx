@@ -7,6 +7,7 @@ import ReactFlow, {
   Node,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { ClipboardList } from 'lucide-react';
 
 import { useWorkflowStore } from './store/workflow';
 import { useUserSettingsStore } from './store/userSettings';
@@ -14,6 +15,7 @@ import Sidebar from './components/Sidebar';
 import PropertiesPanel from './components/PropertiesPanel';
 import TriggerNode from './components/nodes/TriggerNode';
 import ActionNode from './components/nodes/ActionNode';
+import ChangelogModal from './components/ChangelogModal';
 
 const nodeTypes: NodeTypes = {
   trigger: TriggerNode,
@@ -26,6 +28,7 @@ const sidebarWidth = 408;
 function App() {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useWorkflowStore();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [changelogOpen, setChangelogOpen] = useState(false);
 
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -65,9 +68,14 @@ function App() {
         <Sidebar />
       </div>
       <div className="flex-1 flex">
-        <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 text-xs rounded-md z-50">
-          Updated: March 3, 13:15
-        </div>
+        <button 
+          onClick={() => setChangelogOpen(true)}
+          className="absolute top-2 right-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 text-xs rounded-md z-50 flex items-center gap-1.5 shadow-sm transition-colors"
+        >
+          <ClipboardList size={14} />
+          <span>Changelog</span>
+        </button>
+        <ChangelogModal isOpen={changelogOpen} onClose={() => setChangelogOpen(false)} />
         <div className="flex-1" style={{ height: '100vh' }}>
           <ReactFlow
             nodes={nodes}
