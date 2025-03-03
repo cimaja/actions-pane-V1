@@ -121,7 +121,8 @@ export const apps: App[] = [
     description: 'Electronic signature service',
     icon: PenTool,
     color: 'text-red-500',
-    category: 'business'
+    category: 'business',
+    premium: true
   },
   {
     id: 'docusign',
@@ -185,7 +186,8 @@ export const apps: App[] = [
     description: 'Web and mobile work management platform',
     icon: CheckSquare,
     color: 'text-red-400',
-    category: 'productivity'
+    category: 'productivity',
+    premium: true
   },
   {
     id: 'github',

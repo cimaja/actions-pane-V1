@@ -4,11 +4,12 @@ import { Spinner } from './Spinner';
 import { cn } from '../lib/utils';
 import { getBackgroundColorFromTextColor } from '../lib/colorUtils';
 import { useAppStore } from '../store/appStore';
+import { useUserSettingsStore } from '../store/userSettings';
 import { apps as libraryApps, appCategories } from '../data/apps';
 import { appsActionItems } from '../data/actions';
 import { AppCard } from './AppCard';
 import CloudIcon from '../images/cloud.svg';
-import PremiumIcon from '../images/PremiumGreyNew.svg';
+import PremiumIcon from '../images/Premium.svg';
 
 interface LibraryModalProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
   const [selectedApp, setSelectedApp] = useState<AppDetails | null>(initialSelectedApp);
   const [isInstalling, setIsInstalling] = useState(false);
   const { installedApps, installApp, uninstallApp } = useAppStore();
+  const { isPremiumUser } = useUserSettingsStore();
   const modalRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
@@ -337,6 +339,7 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
                 )}
+                style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}
               >
                 Connectors
               </button>
@@ -348,6 +351,7 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
                 )}
+                style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}
               >
                 Custom actions
               </button>
@@ -359,6 +363,7 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
                 )}
+                style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}
               >
                 UI element collections
               </button>
@@ -384,10 +389,10 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
                     <h2 className="text-lg font-semibold text-gray-900">
                       {selectedApp.name}
                     </h2>
-                    {selectedApp.premium && (
+                    {selectedApp.premium && !isPremiumUser && (
                       <span className="bg-blue-50 text-gray-600 text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 whitespace-nowrap">
                         <img src={PremiumIcon} alt="Premium" className="w-3 h-3 opacity-40" />
-                        Premium
+                        Premium Required
                       </span>
                     )}
                   </div>
@@ -707,7 +712,7 @@ export function LibraryModal({ isOpen, onClose, initialSelectedApp = null }: Lib
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
                         <Grid className="w-6 h-6 text-gray-400" />
                       </div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-1">No connectors found</h3>
+                      <h3 className="text-sm font-medium text-gray-900 mb-1" style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}>No connectors found</h3>
                       <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
                     </div>
                   )}

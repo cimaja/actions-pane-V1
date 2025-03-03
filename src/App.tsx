@@ -9,6 +9,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import { useWorkflowStore } from './store/workflow';
+import { useUserSettingsStore } from './store/userSettings';
 import Sidebar from './components/Sidebar';
 import PropertiesPanel from './components/PropertiesPanel';
 import TriggerNode from './components/nodes/TriggerNode';

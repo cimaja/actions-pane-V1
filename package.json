@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@fluentui/react": "^8.122.11",
     "@fluentui/react-components": "^9.60.0",
     "@fluentui/react-icons": "^2.0.274",
     "@fluentui/web-components": "^2.6.1",
@@ -21,6 +22,7 @@
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-switch": "^7.1.0",
     "reactflow": "^11.10.4",
     "tailwind-merge": "^2.2.1",
     "zustand": "^4.5.2"

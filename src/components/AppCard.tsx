@@ -1,8 +1,9 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, Lock } from 'lucide-react';
 import { cn } from '../lib/utils';
 import CloudIcon from '../images/cloud.svg';
-import PremiumIcon from '../images/PremiumGreyNew.svg';
+import PremiumIcon from '../images/Premium.svg';
+import { useUserSettingsStore } from '../store/userSettings';
 
 export interface AppCardProps {
   id: string;
@@ -26,11 +27,12 @@ export const AppCard: React.FC<AppCardProps> = ({
   installed,
   onSeeDetails,
 }) => {
+  const { isPremiumUser } = useUserSettingsStore();
   return (
     <div className="relative" onClick={onSeeDetails}>
-      {premium && (
+      {premium && !isPremiumUser && (
         <div className="absolute -top-2 -right-2 flex items-center gap-1">
-          <div className="bg-blue-50 rounded-full p-0.5" title="Premium">
+          <div className="bg-blue-50 rounded-full p-0.5" title="Premium Required">
             <img src={PremiumIcon} alt="Premium" className="w-3.5 h-3.5 opacity-40" />
           </div>
           <div className={cn(
@@ -56,7 +58,7 @@ export const AppCard: React.FC<AppCardProps> = ({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <h3 className="text-sm text-gray-900 truncate">
+            <h3 className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}>
               {name}
             </h3>
           </div>

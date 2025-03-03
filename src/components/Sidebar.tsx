@@ -11,6 +11,9 @@ import { TemplatesModal } from './TemplatesModal';
 import { LibraryModal } from './LibraryModal';
 import { useAppStore } from '../store/appStore';
 import { AppCard } from './AppCard';
+import { isPremiumConnectorAction } from '../lib/premiumUtils';
+import { useUserSettingsStore } from '../store/userSettings';
+import PremiumIcon from '../images/Premium.svg';
 
 const categories = [
   { id: 'lead-management', label: 'Lead management' },
@@ -37,6 +40,22 @@ const ItemCountBadge = ({ count, isSubgroup = false }: { count: number; isSubgro
     </div>
   );
 };
+
+// Component to show when a category has no visible actions due to filters
+const NoActionsMessage = () => (
+  <div className="py-2 px-4 text-sm text-gray-500 italic">
+    No actions visible with current filters
+  </div>
+);
+
+// Component to show a premium badge for premium actions
+const PremiumBadge = () => (
+  <div className="inline-flex items-center gap-1 ml-1">
+    <div className="bg-blue-50 rounded-full p-0.5" title="Premium Required">
+      <img src={PremiumIcon} alt="Premium" className="w-3.5 h-3.5 opacity-40" />
+    </div>
+  </div>
+);
 
 const EmptyState = ({ 
   icon: Icon, 
@@ -109,6 +128,7 @@ const Sidebar = () => {
   const [activeNav, setActiveNav] = useState('apps');
   const [filterType, setFilterType] = useState<'Popular' | 'A-Z'>('Popular');
   const [searchQuery, setSearchQuery] = useState('');
+  // Initialize with no filters enabled by default (show all actions)
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTab, setSearchTab] = useState<'local' | 'library' | 'templates'>('local');
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
@@ -515,6 +535,13 @@ const Sidebar = () => {
   };
 
   const handleActionClick = (item: string) => {
+    // Don't execute disabled actions (premium actions for non-premium users)
+    if (isActionDisabled(item)) {
+      // Could show a premium upgrade prompt here
+      console.log('Premium action clicked by non-premium user:', item);
+      return;
+    }
+    
     setRecentlyUsed((prev) => {
       const newRecent = [item, ...prev.filter(i => i !== item)].slice(0, 5);
       return newRecent;
@@ -535,6 +562,32 @@ const Sidebar = () => {
       ...prev,
       [`${category}-${subgroupName}`]: !prev[`${category}-${subgroupName}`]
     }));
+  };
+
+  // Get the premium user status from the store
+  const isPremiumUser = useUserSettingsStore((state) => state.isPremiumUser);
+
+  // Determine if an action should be hidden based on current filters
+  const shouldHideAction = (actionName: string): boolean => {
+    // Check if premium filter is active and this is a premium action
+    const hidePremium = selectedFilters.includes('premium');
+    if (hidePremium && isPremiumConnectorAction(actionName)) {
+      return true;
+    }
+
+    // Check if DLP filter is active and this is a DLP action
+    const hideDLP = selectedFilters.includes('dlp');
+    if (hideDLP && actionName.toLowerCase().includes('dlp')) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // Determine if an action should be visually disabled
+  const isActionDisabled = (actionName: string): boolean => {
+    // Premium actions are disabled for non-premium users
+    return !isPremiumUser && isPremiumConnectorAction(actionName);
   };
 
   const renderFilterBar = () => {
@@ -989,7 +1042,16 @@ const Sidebar = () => {
             </div>
           ) : (
             <>
-              {getActionItems().map((section, index) => (
+              {getActionItems()
+                .filter(section => {
+                  // Hide sections where all items are filtered out and all subgroups are filtered out
+                  const hasVisibleItems = section.items.some(item => !shouldHideAction(item));
+                  const hasVisibleSubgroupItems = section.subgroups?.some(sg => 
+                    sg.items.some(item => !shouldHideAction(item))
+                  ) ?? false;
+                  return hasVisibleItems || hasVisibleSubgroupItems;
+                })
+                .map((section, index) => (
                 <div key={section.category} className={cn("relative mb-6", index > 0 && "mt-6")}>
                   <div 
                     data-category={section.category}
@@ -999,7 +1061,7 @@ const Sidebar = () => {
                       <div className={cn("p-1.5 rounded-lg", section.bgColorClass || section.color)}>
                         <section.icon className={cn("w-4 h-4", section.color)} />
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{section.category}</span>
+                      <span className="text-sm font-semibold text-gray-900">{section.category}</span>
                       {searchQuery && (
                         <span className="text-xs text-gray-500">
                           {section.items.length + (section.subgroups?.reduce((acc, sg) => acc + sg.items.length, 0) || 0)} results
@@ -1013,8 +1075,15 @@ const Sidebar = () => {
                       {section.items.length === 0 && section.emptyState && (
                         <EmptyState {...section.emptyState} />
                       )}
+                      
+                      {/* Show no actions message when all items in the section are filtered out */}
+                      {(section.items.length > 0 || (section.subgroups && section.subgroups.length > 0)) && 
+                       section.items.filter(item => !shouldHideAction(item)).length === 0 && 
+                       (!section.subgroups || section.subgroups.every(sg => sg.items.filter(item => !shouldHideAction(item)).length === 0)) && (
+                        <NoActionsMessage />
+                      )}
 
-                      {section.subgroups?.map((subgroup) => (
+                      {section.subgroups?.filter(subgroup => subgroup.items.some(item => !shouldHideAction(item))).map((subgroup) => (
                         <div key={subgroup.name}>
                           <button
                             onClick={() => toggleSubgroup(section.category, subgroup.name)}
@@ -1033,15 +1102,18 @@ const Sidebar = () => {
                           
                           {expandedSubgroups[`${section.category}-${subgroup.name}`] && (
                             <div className="pl-6">
-                              {subgroup.items.map((item) => (
+                              {/* We don't need to show NoActionsMessage here since we're filtering out empty subgroups */}
+                              {subgroup.items.filter(item => !shouldHideAction(item)).map((item) => (
                                 <button
                                   key={item}
                                   onClick={() => handleActionClick(item)}
                                   className={cn(
                                     "w-full pr-2 py-1.5 text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2 group rounded-md",
-                                    searchQuery ? "pl-2" : "pl-6"
+                                    searchQuery ? "pl-2" : "pl-6",
+                                    isActionDisabled(item) && "opacity-60 cursor-not-allowed"
                                   )}
-                                  title={`Execute ${item} action`}
+                                  title={isActionDisabled(item) ? `Premium feature: ${item}` : `Execute ${item} action`}
+                                  disabled={isActionDisabled(item)}
                                 >
                                   <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                                     {section.itemIcons?.[item]?.icon && (
@@ -1053,7 +1125,13 @@ const Sidebar = () => {
                                       </div>
                                     )}
                                     <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-                                      <span className="text-gray-700 truncate">{item}</span>
+                                      <div className="flex items-center">
+                                        <div className="flex items-center">
+                                <span className="text-gray-700 truncate">{item}</span>
+                                {isPremiumConnectorAction(item) && !isPremiumUser && <PremiumBadge />}
+                              </div>
+                                        {isPremiumConnectorAction(item) && !isPremiumUser && <PremiumBadge />}
+                                      </div>
                                       {searchQuery && section.itemCategories && (
                                         <span className="text-xs text-gray-500 truncate">{section.itemCategories[item]}</span>
                                       )}
@@ -1077,15 +1155,20 @@ const Sidebar = () => {
                         </div>
                       ))}
 
-                      {section.items.map((item) => (
+                      {section.items.length > 0 && section.items.filter(item => !shouldHideAction(item)).length === 0 && (
+                        <NoActionsMessage />
+                      )}
+                      {section.items.filter(item => !shouldHideAction(item)).map((item) => (
                         <button
                           key={item}
                           onClick={() => handleActionClick(item)}
                           className={cn(
                             "w-full pr-2 py-1.5 text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2 group rounded-md",
-                            searchQuery ? "pl-2" : "pl-6"
+                            searchQuery ? "pl-2" : "pl-6",
+                            isActionDisabled(item) && "opacity-60 cursor-not-allowed"
                           )}
-                          title={`Execute ${item} action`}
+                          title={isActionDisabled(item) ? `Premium feature: ${item}` : `Execute ${item} action`}
+                          disabled={isActionDisabled(item)}
                         >
                           <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             {section.itemIcons?.[item]?.icon && (
@@ -1097,7 +1180,10 @@ const Sidebar = () => {
                               </div>
                             )}
                             <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-                              <span className="text-gray-700 truncate">{item}</span>
+                              <div className="flex items-center">
+                                <span className="text-gray-700 truncate">{item}</span>
+                                {isPremiumConnectorAction(item) && !isPremiumUser && <PremiumBadge />}
+                              </div>
                               {searchQuery && section.itemCategories && (
                                 <span className="text-xs text-gray-500 truncate">{section.itemCategories[item]}</span>
                               )}

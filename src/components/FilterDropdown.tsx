@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Filter, Check } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface FilterOption {
@@ -16,12 +16,12 @@ interface FilterDropdownProps {
 const filterOptions: FilterOption[] = [
   {
     id: 'dlp',
-    label: 'DLP Actions',
+    label: 'Hide DLP actions',
     description: 'Data Loss Prevention actions'
   },
   {
     id: 'premium',
-    label: 'Premium Actions',
+    label: 'Hide Premium actions',
     description: 'Premium-tier features'
   }
 ];
@@ -65,32 +65,33 @@ export function FilterDropdown({ selectedFilters, onFilterChange }: FilterDropdo
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
-          <div className="px-3 py-2 border-b border-gray-100">
+        <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden z-50">
+          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
             <h3 className="text-sm font-medium text-gray-900">Filters</h3>
           </div>
           
-          <div className="py-2">
+          <div className="py-1">
             {filterOptions.map((option) => (
               <button
                 key={option.id}
                 onClick={() => toggleFilter(option.id)}
-                className="w-full px-3 py-2 flex items-start hover:bg-gray-50 transition-colors group"
+                className="w-full px-3 py-2.5 flex items-start justify-between hover:bg-gray-50 transition-colors group"
               >
-                <div className={cn(
-                  "w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-colors",
-                  selectedFilters.includes(option.id)
-                    ? "bg-[#0078d4] border-[#0078d4]"
-                    : "border-gray-300 group-hover:border-[#0078d4]"
-                )}>
-                  <Check className={cn(
-                    "w-3 h-3 transition-opacity",
-                    selectedFilters.includes(option.id) ? "text-white opacity-100" : "opacity-0"
-                  )} />
-                </div>
-                <div className="ml-3 text-left">
+                <div className="text-left">
                   <div className="text-sm font-medium text-gray-900">{option.label}</div>
                   <div className="text-xs text-gray-500">{option.description}</div>
+                </div>
+                <div className="relative flex-shrink-0 mt-0.5">  
+                  <div className={cn(
+                    "w-10 h-5 rounded-full transition-colors duration-200",
+                    selectedFilters.includes(option.id) 
+                      ? "bg-[#0078d4]" 
+                      : "bg-gray-200 group-hover:bg-gray-300"
+                  )}></div>
+                  <div className={cn(
+                    "absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow-md transform transition-transform duration-200",
+                    selectedFilters.includes(option.id) && "translate-x-5"
+                  )}></div>
                 </div>
               </button>
             ))}
