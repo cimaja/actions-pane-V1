@@ -979,10 +979,10 @@ const Sidebar = () => {
                           ))}
                         </div>
                         <div>
-                          <h3 className="text-sm text-gray-900">
+                          <h3 className="text-sm font-semibold text-gray-900">
                             {template.title}
                           </h3>
-                          <p className="text-[10px] leading-normal text-gray-500 mt-1">
+                          <p className="text-xs leading-normal text-gray-500 mt-1">
                             {template.description}
                           </p>
                         </div>
@@ -1024,10 +1024,10 @@ const Sidebar = () => {
                       ))}
                     </div>
                     <div>
-                      <h3 className="text-sm text-gray-900">
+                      <h3 className="text-sm font-semibold text-gray-900">
                         {template.title}
                       </h3>
-                      <p className="text-[10px] leading-normal text-gray-500 mt-1">
+                      <p className="text-xs leading-normal text-gray-500 mt-1">
                         {template.description}
                       </p>
                     </div>
