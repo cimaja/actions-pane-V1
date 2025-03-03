@@ -1050,28 +1050,7 @@ const Sidebar = () => {
           ) : (
             <>
               {/* Show message when premium results are filtered out */}
-              {searchQuery && selectedFilters.includes('premium') && getFilteredPremiumCount() > 0 ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 mt-4">
-                  <div className="flex items-start gap-2">
-                    <div className="text-amber-500 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Premium results are hidden</p>
-                      <button 
-                        onClick={() => setSelectedFilters(filters => filters.filter(f => f !== 'premium'))}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-0.5"
-                      >
-                        Show premium results
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : searchQuery && selectedFilters.includes('premium') ? (
+              {searchQuery && selectedFilters.includes('premium') ? (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                   <div className="flex items-start gap-2">
                     <div className="text-blue-500 mt-0.5">
@@ -1082,16 +1061,13 @@ const Sidebar = () => {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">Premium filter is active</p>
-                      <p className="text-xs text-gray-600 mt-0.5">
-                        Premium results are hidden from search results.
-                        <button 
-                          onClick={() => setSelectedFilters(filters => filters.filter(f => f !== 'premium'))}
-                          className="text-blue-600 hover:text-blue-800 font-medium"
-                        >
-                          Show premium results
-                        </button>
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">Premium results are hidden</p>
+                      <button 
+                        onClick={() => setSelectedFilters(filters => filters.filter(f => f !== 'premium'))}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-0.5"
+                      >
+                        Show premium results
+                      </button>
                     </div>
                   </div>
                 </div>
