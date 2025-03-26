@@ -1,15 +1,6 @@
-# ActionsPane
+## Project Overview
 
-A modern React application built with TypeScript and Vite, featuring drag-and-drop functionality and flow-based interfaces.
-
-## 🚀 Features
-
-- Built with React 18 and TypeScript
-- Drag and drop functionality using `@dnd-kit`
-- Flow-based interface using `reactflow`
-- State management with `zustand`
-- Modern UI with Tailwind CSS
-- Icon system using `lucide-react`
+First design prototype for the Power Automate Desktop actions pane. Test it -> https://cimaja.github.io/actions-pane-V1/
 
 ## 🛠️ Tech Stack
 
@@ -71,52 +62,3 @@ ActionsPane/
 ├── public/           # Static assets
 └── ...config files   # Various configuration files
 ```
-
-## 🔧 Configuration Files
-
-- `vite.config.ts` - Vite configuration
-- `tsconfig.json` - TypeScript configuration
-- `tailwind.config.js` - Tailwind CSS configuration
-- `postcss.config.js` - PostCSS configuration
-- `eslint.config.js` - ESLint configuration
-
-## 🎯 Views and Controls
-
-### Main Navigation
-
-The application features a comprehensive sidebar with the following main sections:
-
-- **Favorites** (`mainNavItems`) - Quick access to starred items
-- **AI** (`mainNavItems`) - Artificial Intelligence related actions
-- **Apps** (`appsActionItems`) - Application-specific actions
-- **Logic** (`logicActionItems`) - Programming control flow actions
-- **Interaction** (`interactionActionItems`) - User interface and browser automation
-- **Files** (`fileActionItems`) - File system operations
-- **Advanced** (`advancedActionItems`) - System-level and administrative tasks
-
-### Additional Features
-
-- **Templates** (`bottomNavItems`) - Pre-configured automation templates
-- **Library** (`bottomNavItems`) - Resource library and saved components
-- **Search** - Global search functionality
-- **Filtering** (`categories`) - Category-based filtering including:
-  - Lead management
-  - Sales pipeline
-  - Marketing campaigns
-  - Customer support
-  - Data management
-  - Project management
-  - Tickets & incidents
-
-### UI Components
-
-- **DraggableItem** - Drag-and-drop enabled components
-- **FilterDropdown** - Category and type filtering
-- **LibraryModal** - Access to saved resources
-- **PropertiesPanel** - Item configuration
-- **TemplatesModal** - Template management
-- **Sidebar** - Main navigation and action selection
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
