@@ -16,6 +16,7 @@ import PropertiesPanel from './components/PropertiesPanel';
 import TriggerNode from './components/nodes/TriggerNode';
 import ActionNode from './components/nodes/ActionNode';
 import ChangelogModal from './components/ChangelogModal';
+import LoginOverlay from './components/LoginOverlay';
 
 const nodeTypes: NodeTypes = {
   trigger: TriggerNode,
@@ -29,6 +30,7 @@ function App() {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useWorkflowStore();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [changelogOpen, setChangelogOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -64,6 +66,7 @@ function App() {
 
   return (
     <div className="flex h-screen">
+      {!isAuthenticated && <LoginOverlay onAuthenticated={() => setIsAuthenticated(true)} />}
       <div className="w-[408px] flex-shrink-0 relative border-r border-gray-200">
         <Sidebar />
       </div>
