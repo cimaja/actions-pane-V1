@@ -1,6 +1,7 @@
 ## Project Overview
 
-First design prototype for the Power Automate Desktop actions pane. Test it -> https://cimaja.github.io/actions-pane-V1/
+First design prototype for the Power Automate Desktop actions pane. 
+Test it -> https://cimaja.github.io/actions-pane-V1/
 
 ## 🛠️ Tech Stack
 
